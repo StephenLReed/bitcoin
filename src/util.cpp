@@ -99,8 +99,8 @@ namespace boost {
 
 using namespace std;
 
-const char * const BITCOIN_CONF_FILENAME = "bitcoin.conf";
-const char * const BITCOIN_PID_FILENAME = "bitcoind.pid";
+const char * const BITCOIN_CONF_FILENAME = "aicoin.conf";
+const char * const BITCOIN_PID_FILENAME = "aicoind.pid";
 
 CCriticalSection cs_args;
 map<string, string> mapArgs;
@@ -497,7 +497,7 @@ boost::filesystem::path GetDefaultDataDir()
     return pathRet / "Library/Application Support/Bitcoin";
 #else
     // Unix
-    return pathRet / ".bitcoin";
+    return pathRet / ".aicoin";
 #endif
 #endif
 }

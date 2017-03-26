@@ -20,7 +20,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 
     // handle no proof-of-work after a certain block by returning a hash target that any hash can meet
     if (nNoProofOfWorkAfterHeight > 0 && pindexLast->nHeight > nNoProofOfWorkAfterHeight) {
-        return 0x20ffffff;
+        return nProofOfWorkLimit;
     }
 
     // Only change once per difficulty adjustment interval
@@ -81,23 +81,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
 {
-    // if trivial proof-of-work is specified, then bypass this check because we do not know the height of the block here
-    if (nNoProofOfWorkAfterHeight > 0)
-        return true;
-   
-    bool fNegative;
-    bool fOverflow;
-    arith_uint256 bnTarget;
-
-    bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
-
-    // Check range
-    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(params.powLimit))
-        return false;
-
-    // Check proof of work matches claimed amount
-    if (UintToArith256(hash) > bnTarget)
-        return false;
-
+    printf("CheckProofOfWork ...\n");
+    // Cooperative mining does not check proof-of-work.
     return true;
 }
