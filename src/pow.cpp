@@ -81,7 +81,6 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
 {
-    printf("CheckProofOfWork ...\n");
     // Cooperative mining does not check proof-of-work.
     return true;
 }
