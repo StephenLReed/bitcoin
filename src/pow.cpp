@@ -18,6 +18,11 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     if (pindexLast == NULL)
         return nProofOfWorkLimit;
 
+    // handle no proof-of-work after a certain block by returning a hash target that any hash can meet
+    if (nNoProofOfWorkAfterHeight > 0 && pindexLast->nHeight > nNoProofOfWorkAfterHeight) {
+        return 0x20ffffff;
+    }
+
     // Only change once per difficulty adjustment interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
     {
@@ -76,6 +81,10 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
 {
+    // if trivial proof-of-work is specified, then bypass this check because we do not know the height of the block here
+    if (nNoProofOfWorkAfterHeight > 0)
+        return true;
+   
     bool fNegative;
     bool fOverflow;
     arith_uint256 bnTarget;

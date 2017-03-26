@@ -170,6 +170,8 @@ extern std::atomic_bool fImporting;
 extern bool fReindex;
 extern int nScriptCheckThreads;
 extern bool fTxIndex;
+/** if non-zero, then after the given blockchain height, a highest target allows the first hash to solve the block */
+extern int nNoProofOfWorkAfterHeight;
 extern bool fAddrIndex;
 extern bool fIsBareMultisigStd;
 extern bool fRequireStandard;

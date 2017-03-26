@@ -92,6 +92,9 @@ CScript COINBASE_FLAGS;
 
 const std::string strMessageMagic = "Bitcoin Signed Message:\n";
 
+/** if non-zero, then after the given blockchain height, a highest target allows the first hash to solve the block */
+int nNoProofOfWorkAfterHeight = 0;
+
 // Internal stuff
 namespace {
 
