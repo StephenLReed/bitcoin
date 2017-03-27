@@ -131,7 +131,7 @@ static bool RPCAuthorized(const std::string& strAuth, std::string& strAuthUserna
 {
     if (strRPCUserColonPass.empty()) // Belt-and-suspenders measure if InitRPCAuthentication was not called
         return false;
-    if (strAuth.substr(0, 6) != "Basic ")
+    if (strAuth.substr(0, 6) != "Basic ") 
         return false;
     std::string strUserPass64 = strAuth.substr(6);
     boost::trim(strUserPass64);
