@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
  
   <groupId>com.aicoin</groupId>
-  <artifactId>make-bitcoin</artifactId>
+  <artifactId>bitcoin</artifactId>
   <version>1.0</version>
  
   <build>
     <plugins>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -25,15 +25,40 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.5.0</version>
         <executions>
+          
           <execution>
             <!--  mvn install -->
-            <!-- execute the make command in the src directory -->
+            <!-- execute the autogen.sh script in the bitcoin directory -->
+            <id>exec-autogen</id>
             <phase>install</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <workingDirectory>src</workingDirectory>
+              <executable>./autogen.sh</executable>
+            </configuration>
+          </execution>
+          
+          <execution>
+            <!-- execute the configure script in the bitcoin directory -->
+            <id>exec-configure</id>
+            <phase>install</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>./configure</executable>
+            </configuration>
+          </execution>
+          
+          <execution>
+            <!-- execute the make command in the bitcoin directory -->
+            <id>exec-make</id>
+            <phase>install</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
               <executable>make</executable>
             </configuration>
           </execution>

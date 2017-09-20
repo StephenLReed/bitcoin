@@ -12,6 +12,8 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+// AI Coin
+#include "util.h"
 
 #define BEGIN(a)            ((char*)&(a))
 #define END(a)              ((char*)&((&(a))[1]))

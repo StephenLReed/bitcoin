@@ -50,7 +50,7 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "The Times 02/Dec/2014 Millions lost to conmen posing as banks";
+    const char* pszTimestamp = "The New York Times, Business Day, 19/Sep/2017 Prosecutors Open Criminal Investigation Into Equifax Breach";
     const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
@@ -71,10 +71,12 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 210000;
-        consensus.BIP34Height = 227931;
+        // AI Coin fix to value 2 when bitcoinj library is upgraded to BIP 34, put block height in the coinbase transaction
+        consensus.BIP34Height = 999999999; 
+        // AI Coin same as genesis
         consensus.BIP34Hash = uint256S("0x000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8");
-        consensus.BIP65Height = 388381; // 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
-        consensus.BIP66Height = 363725; // 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
+        consensus.BIP65Height = 999999999;
+        consensus.BIP66Height = 999999999;
         consensus.powLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
         consensus.nPowTargetSpacing = 10 * 60;
@@ -100,7 +102,8 @@ public:
         // AI Coin has minimum work in every block
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
 
-        // By default assume that the signatures in ancestors of this block are valid.
+        // By default assume that the signatures in ancestors of this block are valid. 
+        // AI Coin does not use this yet.
         consensus.defaultAssumeValid = uint256S("0x00000000000000000013176bf8d7dfeab4e1db31dc93bc311b436e82ab226b90"); //453354
 
         /**
@@ -118,19 +121,20 @@ public:
 
         // AI Coin genesis block for mainnet
         genesis = CreateGenesisBlock(
-            1417543722, // December 2, 2014 18:8:41 GMT
+            1505833343, // Tuesday, September 19, 2017 3:02:23 PM GMT
             2083236893, 
             0x1d00ffff, 
             1, 
-            50 * COIN);
+            11905 * COIN); // aicoin 5 billion total circulation, bitcoin 21 million total circuation with 50 initial reward
         consensus.hashGenesisBlock = genesis.GetHash();
         //printf("mainnet genesis hash  %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        assert(consensus.hashGenesisBlock == uint256S("0xc726f94ea32887573f95352ae58259e32596a5ea5c475f0e2fcdc7b9a948506c"));
+        assert(consensus.hashGenesisBlock == uint256S("0xfceb3eeb926e90b71d83e4f043e346ee021b1c2ca743c7c292ef82487b372caa"));
         //printf("mainnet Merkel root   %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        assert(genesis.hashMerkleRoot == uint256S("0x0123da0013e976472467a8184ac91cd303c69dc8cd98072df4bf8df71dadd2ee"));
+        assert(genesis.hashMerkleRoot == uint256S("0xad742268a2621622f464ead4bf258155de8ad3e997fd036cd96b4a165833aa90"));
 
         // Note that of those with the service bits flag, most only support a subset of possible options
-        vSeeds.push_back(CDNSSeedData("ai-coin.org", "seed.ai-coin.org"));
+        // AI Coin does not allow direct connection to seeds. Instead a software agent initiates the connection on behalf of the peers.
+        vSeeds.push_back(CDNSSeedData("x.com","y.com"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,23); // aicoin addresses begin with A
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
@@ -182,10 +186,10 @@ public:
     CTestNetParams() {
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210000;
-        consensus.BIP34Height = 21111;
+        consensus.BIP34Height = 999999999;
         consensus.BIP34Hash = uint256S("0x0000000023b3a96d3484e5abb3755c413e7d41500f8e2a5c3f0dd01299cd8ef8");
-        consensus.BIP65Height = 581885; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
-        consensus.BIP66Height = 330776; // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
+        consensus.BIP65Height = 999999999; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
+        consensus.BIP66Height = 999999999; // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
         consensus.powLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
         consensus.nPowTargetSpacing = 10 * 60;
@@ -226,17 +230,20 @@ public:
             414098458, 
             0x1d00ffff, 
             1, 
-            50 * COIN);
+            11905 * COIN); // aicoin 5 billion total circulation, bitcoin 21 million total circuation with 50 initial reward
+        // Also see validation.cpp GetBlockSubsidy method which codes the reward too.
+
         consensus.hashGenesisBlock = genesis.GetHash();
-        printf("testnet genesis hash  %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        assert(consensus.hashGenesisBlock == uint256S("0x58102d812d0bc8539f122a11ef09775d1a2b269cbd94562786d375fc9144c86d"));
-        printf("testnet Merkel root   %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        assert(genesis.hashMerkleRoot == uint256S("0x0123da0013e976472467a8184ac91cd303c69dc8cd98072df4bf8df71dadd2ee"));
+        //printf("testnet genesis hash  %s\n", consensus.hashGenesisBlock.ToString().c_str());
+        assert(consensus.hashGenesisBlock == uint256S("0x3bf65879bb8db7d6d5b53e897c7acfc7b7d69bc7f806cdaf3a8e695090b90e87"));
+        //printf("testnet Merkel root   %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        assert(genesis.hashMerkleRoot == uint256S("0xad742268a2621622f464ead4bf258155de8ad3e997fd036cd96b4a165833aa90"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        vSeeds.push_back(CDNSSeedData("ai-coin.org", "seed.ai-coin.org"));
+        // AI Coin does not allow direct connection to seeds. Instead a software agent initiates the connection on behalf of the peers.
+        vSeeds.push_back(CDNSSeedData("x.com","y.com"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
@@ -310,12 +317,12 @@ public:
         nDefaultPort = 18444;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1296688602, 2, 0x207fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1296688602, 2, 0x207fffff, 1, 11905 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        printf("regtest genesis hash  %s\n", consensus.hashGenesisBlock.ToString().c_str());
-        assert(consensus.hashGenesisBlock == uint256S("0xadc61ce90770bd2edfef74d5120c1281ea6941f732ac7e8ba0ed76f72c017cbb"));
-        printf("regtest merkle root   %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        assert(genesis.hashMerkleRoot == uint256S("0123da0013e976472467a8184ac91cd303c69dc8cd98072df4bf8df71dadd2ee"));
+        //printf("regtest genesis hash  %s\n", consensus.hashGenesisBlock.ToString().c_str());
+        assert(consensus.hashGenesisBlock == uint256S("0x63d8a0f1586bac687153cd63fda293bcd15ba7f23d37a558c1ab0c5dcbe50686"));
+        //printf("regtest merkle root   %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        assert(genesis.hashMerkleRoot == uint256S("0xad742268a2621622f464ead4bf258155de8ad3e997fd036cd96b4a165833aa90"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.

@@ -530,8 +530,10 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
 
     if (tx.IsCoinBase())
     {
-        if (tx.vin[0].scriptSig.size() < 2 || tx.vin[0].scriptSig.size() > 100)
+        if (tx.vin[0].scriptSig.size() < 2 || tx.vin[0].scriptSig.size() > 114) {// accomodates the AI Coin genesis block
+            //printf("scriptSig size =   %d\n", tx.vin[0].scriptSig.size());
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-length");
+        }
     }
     else
     {
@@ -1212,7 +1214,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     if (halvings >= 64)
         return 0;
 
-    CAmount nSubsidy = 50 * COIN;
+    CAmount nSubsidy = 11905 * COIN; // the initial AI Coin block reward
     // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
     nSubsidy >>= halvings;
     return nSubsidy;

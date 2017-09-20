@@ -621,6 +621,9 @@ bool ParseFixedPoint(const std::string &val, int decimals, int64_t *amount_out)
     int end = val.size();
     int point_ofs = 0;
 
+    //AI Coin
+    LogPrint("util", "ParseFixedPoint val=%s\n", val.c_str());
+
     if (ptr < end && val[ptr] == '-') {
         mantissa_sign = true;
         ++ptr;
@@ -632,24 +635,42 @@ bool ParseFixedPoint(const std::string &val, int decimals, int64_t *amount_out)
             ++ptr;
         } else if (val[ptr] >= '1' && val[ptr] <= '9') {
             while (ptr < end && val[ptr] >= '0' && val[ptr] <= '9') {
-                if (!ProcessMantissaDigit(val[ptr], mantissa, mantissa_tzeros))
-                    return false; /* overflow */
+                if (!ProcessMantissaDigit(val[ptr], mantissa, mantissa_tzeros)) {
+                   //AI Coin
+                  LogPrint("util", "overflow");
+                  return false; /* overflow */
+                }
                 ++ptr;
             }
-        } else return false; /* missing expected digit */
-    } else return false; /* empty string or loose '-' */
+        } else {
+           //AI Coin
+           LogPrint("util", "missing expected digit");
+           return false; /* missing expected digit */ 
+        }
+    } else {
+        //AI Coin
+        LogPrint("util", "empty string or loose '-'");
+        return false; /* empty string or loose '-' */ 
+    }
     if (ptr < end && val[ptr] == '.')
     {
         ++ptr;
         if (ptr < end && val[ptr] >= '0' && val[ptr] <= '9')
         {
             while (ptr < end && val[ptr] >= '0' && val[ptr] <= '9') {
-                if (!ProcessMantissaDigit(val[ptr], mantissa, mantissa_tzeros))
-                    return false; /* overflow */
+                if (!ProcessMantissaDigit(val[ptr], mantissa, mantissa_tzeros)) {
+                   //AI Coin
+                   LogPrint("util", "overflow 2");
+                   return false; /* overflow */ 
+                }
                 ++ptr;
                 ++point_ofs;
             }
-        } else return false; /* missing expected digit */
+        } else {
+            //AI Coin
+            LogPrint("util", "missing expected digit 2");
+            return false; /* missing expected digit */ 
+        }
     }
     if (ptr < end && (val[ptr] == 'e' || val[ptr] == 'E'))
     {
@@ -662,15 +683,25 @@ bool ParseFixedPoint(const std::string &val, int decimals, int64_t *amount_out)
         }
         if (ptr < end && val[ptr] >= '0' && val[ptr] <= '9') {
             while (ptr < end && val[ptr] >= '0' && val[ptr] <= '9') {
-                if (exponent > (UPPER_BOUND / 10LL))
-                    return false; /* overflow */
+                if (exponent > (UPPER_BOUND / 10LL)) {
+                    //AI Coin
+                    LogPrint("util", "overflow 3");
+                    return false; /* overflow */ 
+               }
                 exponent = exponent * 10 + val[ptr] - '0';
                 ++ptr;
             }
-        } else return false; /* missing expected digit */
+        } else {
+            //AI Coin
+            LogPrint("util", "missing expected digit 3");
+            return false; /* missing expected digit */ 
+        }
     }
-    if (ptr != end)
-        return false; /* trailing garbage */
+    if (ptr != end) { 
+        //AI Coin
+        LogPrint("util", "trailing garbage");
+        return false; /* trailing garbage */ 
+    }
 
     /* finalize exponent */
     if (exponent_sign)
@@ -683,18 +714,30 @@ bool ParseFixedPoint(const std::string &val, int decimals, int64_t *amount_out)
 
     /* convert to one 64-bit fixed-point value */
     exponent += decimals;
-    if (exponent < 0)
-        return false; /* cannot represent values smaller than 10^-decimals */
-    if (exponent >= 18)
-        return false; /* cannot represent values larger than or equal to 10^(18-decimals) */
+    if (exponent < 0)  {
+       //AI Coin
+       LogPrint("util", "cannot represent values smaller than 10^-decimals");
+       return false; /* cannot represent values smaller than 10^-decimals */ 
+    }
+    if (exponent >= 18) {
+       //AI Coin
+       LogPrint("util", "cannot represent values larger than or equal to 10^(18-decimals)");
+       return false; /* cannot represent values larger than or equal to 10^(18-decimals) */ 
+    }
 
     for (int i=0; i < exponent; ++i) {
-        if (mantissa > (UPPER_BOUND / 10LL) || mantissa < -(UPPER_BOUND / 10LL))
-            return false; /* overflow */
+        if (mantissa > (UPPER_BOUND / 10LL) || mantissa < -(UPPER_BOUND / 10LL)) {
+           //AI Coin
+           LogPrint("util", "overflow 4");
+           return false; /* overflow */ 
+        }
         mantissa *= 10;
     }
-    if (mantissa > UPPER_BOUND || mantissa < -UPPER_BOUND)
-        return false; /* overflow */
+    if (mantissa > UPPER_BOUND || mantissa < -UPPER_BOUND) {
+       //AI Coin
+       LogPrint("util", "overflow 5");
+       return false; /* overflow */ 
+    }
 
     if (amount_out)
         *amount_out = mantissa;
