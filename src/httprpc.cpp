@@ -129,6 +129,8 @@ static bool multiUserAuthorized(std::string strUserPass)
 
 static bool RPCAuthorized(const std::string& strAuth, std::string& strAuthUsernameOut)
 {
+    // AI Coin
+    //LogPrintf("RPCAuthorized, strAuth %s\n", strAuth.c_str());
     if (strRPCUserColonPass.empty()) // Belt-and-suspenders measure if InitRPCAuthentication was not called
         return false;
     if (strAuth.substr(0, 6) != "Basic ") 
@@ -136,9 +138,13 @@ static bool RPCAuthorized(const std::string& strAuth, std::string& strAuthUserna
     std::string strUserPass64 = strAuth.substr(6);
     boost::trim(strUserPass64);
     std::string strUserPass = DecodeBase64(strUserPass64);
+    //LogPrintf("RPCAuthorized, strUserPass %s\n", strUserPass.c_str());
+    //LogPrintf("RPCAuthorized, strRPCUserColonPass %s\n", strRPCUserColonPass.c_str());
 
-    if (strUserPass.find(":") != std::string::npos)
+    if (strUserPass.find(":") != std::string::npos) {
         strAuthUsernameOut = strUserPass.substr(0, strUserPass.find(":"));
+        //LogPrintf("RPCAuthorized, strAuthUsernameOut %s\n", strAuthUsernameOut.c_str());
+    }
 
     //Check if authorized under single-user field
     if (TimingResistantEqual(strUserPass, strRPCUserColonPass)) {
@@ -224,6 +230,7 @@ static bool InitRPCAuthentication()
                 "", CClientUIInterface::MSG_ERROR);
             return false;
         }
+        //LogPrintf("InitRPCAuthentication, strRPCUserColonPass %s\n", strRPCUserColonPass.c_str());
     } else {
         LogPrintf("Config options rpcuser and rpcpassword will soon be deprecated. Locally-run instances may remove rpcuser to use cookie-based auth, or may be replaced with rpcauth. Please see share/rpcuser for rpcauth auth generation.\n");
         strRPCUserColonPass = GetArg("-rpcuser", "") + ":" + GetArg("-rpcpassword", "");
