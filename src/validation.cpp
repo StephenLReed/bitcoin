@@ -788,11 +788,14 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
             dFreeCount += nSize;
         }
 
-        if (nAbsurdFee && nFees > nAbsurdFee)
+        if (nAbsurdFee && nFees > nAbsurdFee) {
+            LogPrintf("Absurdly-high-fee %d > %d ", nFees, nAbsurdFee);
+            LogPrint("mempool", "Absurdly-high-fee %d > %d ", nFees, nAbsurdFee);
             return state.Invalid(false,
-                REJECT_HIGHFEE, "absurdly-high-fee",
+                REJECT_HIGHFEE, "Absurdly-high-fee",
                 strprintf("%d > %d", nFees, nAbsurdFee));
-
+        }
+  
         // Calculate in-mempool ancestors, up to a limit.
         CTxMemPool::setEntries setAncestors;
         size_t nLimitAncestors = GetArg("-limitancestorcount", DEFAULT_ANCESTOR_LIMIT);
@@ -1209,14 +1212,20 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
-    int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
-    // Force block reward to zero when right shift is undefined.
-    if (halvings >= 64)
-        return 0;
+//    int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
+//    // Force block reward to zero when right shift is undefined.
+//    if (halvings >= 64)
+//        return 0;
+//
+//    CAmount nSubsidy = 11905 * COIN; // the initial AI Coin block reward
+//    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
+//    nSubsidy >>= halvings;
 
-    CAmount nSubsidy = 11905 * COIN; // the initial AI Coin block reward
-    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
-    nSubsidy >>= halvings;
+    // premine 90 billion aicoins by rewarding 500 million each for the first 180 coins, and 1 coin reward thereafter
+    CAmount nSubsidy = 1 * COIN;
+    if (nHeight > 0 && nHeight <= 181) {
+        nSubsidy = 500000000 * COIN;
+    }
     return nSubsidy;
 }
 

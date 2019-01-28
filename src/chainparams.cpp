@@ -125,7 +125,7 @@ public:
             2083236893, 
             0x1d00ffff, 
             1, 
-            11905 * COIN); // aicoin 5 billion total circulation, bitcoin 21 million total circuation with 50 initial reward
+            11905 * COIN); // aicoin 90 billion total circulation, bitcoin 21 million total circulation with 50 initial reward
         consensus.hashGenesisBlock = genesis.GetHash();
         //printf("mainnet genesis hash  %s\n", consensus.hashGenesisBlock.ToString().c_str());
         assert(consensus.hashGenesisBlock == uint256S("0xfceb3eeb926e90b71d83e4f043e346ee021b1c2ca743c7c292ef82487b372caa"));
